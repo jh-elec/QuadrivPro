@@ -1,0 +1,283 @@
+
+QuadrivPro.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000154  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000001a8  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000001a8  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001d8  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  00000214  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000760  00000000  00000000  00000234  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 0000059a  00000000  00000000  00000994  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000041d  00000000  00000000  00000f2e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  0000134c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000324  00000000  00000000  00001370  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000022d  00000000  00000000  00001694  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000018c1  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	0c 94 2a 00 	jmp	0x54	; 0x54 <__ctors_end>
+   4:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   8:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+   c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  10:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  14:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  18:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  1c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  20:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  24:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  28:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  2c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  30:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  34:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  38:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  3c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  40:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  44:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  48:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  4c:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+  50:	0c 94 34 00 	jmp	0x68	; 0x68 <__bad_interrupt>
+
+00000054 <__ctors_end>:
+  54:	11 24       	eor	r1, r1
+  56:	1f be       	out	0x3f, r1	; 63
+  58:	cf e5       	ldi	r28, 0x5F	; 95
+  5a:	d8 e0       	ldi	r29, 0x08	; 8
+  5c:	de bf       	out	0x3e, r29	; 62
+  5e:	cd bf       	out	0x3d, r28	; 61
+  60:	0e 94 36 00 	call	0x6c	; 0x6c <main>
+  64:	0c 94 a8 00 	jmp	0x150	; 0x150 <_exit>
+
+00000068 <__bad_interrupt>:
+  68:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
+
+0000006c <main>:
+#define BT(PIN, BIT)		(PIN  =   (1<<BIT))
+
+
+int main(void)
+{
+	DDRx(STATE_LED_PORT) |= (1<<STATE_LED_bp);
+  6c:	8c 9a       	sbi	0x11, 4	; 17
+	
+	DDRx(RELAY_PORT)	 |= (1<<RELAY_bp);
+  6e:	a6 9a       	sbi	0x14, 6	; 20
+	
+	DDRx(POWER_OUT_PORT) |= (1<<POWER_OUT_1_bp) | // power out driver(s) cnfg.
+  70:	84 b3       	in	r24, 0x14	; 20
+  72:	8c 63       	ori	r24, 0x3C	; 60
+  74:	84 bb       	out	0x14, r24	; 20
+#define BC(PORT, BIT)		(PORT &= ~(1<<BIT))
+#define BT(PIN, BIT)		(PIN  =   (1<<BIT))
+
+
+int main(void)
+{
+  76:	86 e0       	ldi	r24, 0x06	; 6
+    {
+		uint8_t cycleCnt = 0x00;
+		
+		for (cycleCnt = 0x00 ; cycleCnt < 6 ; cycleCnt++)
+		{
+			BS(RELAY_PORT,RELAY_bp);
+  78:	ae 9a       	sbi	0x15, 6	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_1_bp);
+  7a:	ad 9a       	sbi	0x15, 5	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_2_bp);
+  7c:	ac 9a       	sbi	0x15, 4	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_3_bp);
+  7e:	ab 9a       	sbi	0x15, 3	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_4_bp);
+  80:	aa 9a       	sbi	0x15, 2	; 21
+			BS(STATE_LED_PORT,STATE_LED_bp);
+  82:	94 9a       	sbi	0x12, 4	; 18
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  84:	2f ef       	ldi	r18, 0xFF	; 255
+  86:	34 e3       	ldi	r19, 0x34	; 52
+  88:	9c e0       	ldi	r25, 0x0C	; 12
+  8a:	21 50       	subi	r18, 0x01	; 1
+  8c:	30 40       	sbci	r19, 0x00	; 0
+  8e:	90 40       	sbci	r25, 0x00	; 0
+  90:	e1 f7       	brne	.-8      	; 0x8a <main+0x1e>
+  92:	00 c0       	rjmp	.+0      	; 0x94 <main+0x28>
+  94:	00 00       	nop
+			_delay_ms(250);
+			BC(RELAY_PORT,RELAY_bp);
+  96:	ae 98       	cbi	0x15, 6	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_1_bp);
+  98:	ad 98       	cbi	0x15, 5	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_2_bp);
+  9a:	ac 98       	cbi	0x15, 4	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_3_bp);
+  9c:	ab 98       	cbi	0x15, 3	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_4_bp);
+  9e:	aa 98       	cbi	0x15, 2	; 21
+			BC(STATE_LED_PORT,STATE_LED_bp);
+  a0:	94 98       	cbi	0x12, 4	; 18
+  a2:	2f ef       	ldi	r18, 0xFF	; 255
+  a4:	34 e3       	ldi	r19, 0x34	; 52
+  a6:	9c e0       	ldi	r25, 0x0C	; 12
+  a8:	21 50       	subi	r18, 0x01	; 1
+  aa:	30 40       	sbci	r19, 0x00	; 0
+  ac:	90 40       	sbci	r25, 0x00	; 0
+  ae:	e1 f7       	brne	.-8      	; 0xa8 <main+0x3c>
+  b0:	00 c0       	rjmp	.+0      	; 0xb2 <main+0x46>
+  b2:	00 00       	nop
+  b4:	81 50       	subi	r24, 0x01	; 1
+	
+    while (1) 
+    {
+		uint8_t cycleCnt = 0x00;
+		
+		for (cycleCnt = 0x00 ; cycleCnt < 6 ; cycleCnt++)
+  b6:	01 f7       	brne	.-64     	; 0x78 <main+0xc>
+  b8:	86 e0       	ldi	r24, 0x06	; 6
+			_delay_ms(250);			
+		}
+	
+		for (cycleCnt = 0x00 ; cycleCnt < 6 ; cycleCnt++)
+		{
+			BS(RELAY_PORT,RELAY_bp);
+  ba:	ae 9a       	sbi	0x15, 6	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_1_bp);
+  bc:	ad 9a       	sbi	0x15, 5	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_2_bp);
+  be:	ac 9a       	sbi	0x15, 4	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_3_bp);
+  c0:	ab 9a       	sbi	0x15, 3	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_4_bp);
+  c2:	aa 9a       	sbi	0x15, 2	; 21
+			BS(STATE_LED_PORT,STATE_LED_bp);
+  c4:	94 9a       	sbi	0x12, 4	; 18
+  c6:	2f ef       	ldi	r18, 0xFF	; 255
+  c8:	36 e1       	ldi	r19, 0x16	; 22
+  ca:	91 e1       	ldi	r25, 0x11	; 17
+  cc:	21 50       	subi	r18, 0x01	; 1
+  ce:	30 40       	sbci	r19, 0x00	; 0
+  d0:	90 40       	sbci	r25, 0x00	; 0
+  d2:	e1 f7       	brne	.-8      	; 0xcc <main+0x60>
+  d4:	00 c0       	rjmp	.+0      	; 0xd6 <main+0x6a>
+  d6:	00 00       	nop
+			_delay_ms(350);
+			BC(RELAY_PORT,RELAY_bp);
+  d8:	ae 98       	cbi	0x15, 6	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_1_bp);
+  da:	ad 98       	cbi	0x15, 5	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_2_bp);
+  dc:	ac 98       	cbi	0x15, 4	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_3_bp);
+  de:	ab 98       	cbi	0x15, 3	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_4_bp);
+  e0:	aa 98       	cbi	0x15, 2	; 21
+			BC(STATE_LED_PORT,STATE_LED_bp);
+  e2:	94 98       	cbi	0x12, 4	; 18
+  e4:	2f ef       	ldi	r18, 0xFF	; 255
+  e6:	36 e1       	ldi	r19, 0x16	; 22
+  e8:	91 e1       	ldi	r25, 0x11	; 17
+  ea:	21 50       	subi	r18, 0x01	; 1
+  ec:	30 40       	sbci	r19, 0x00	; 0
+  ee:	90 40       	sbci	r25, 0x00	; 0
+  f0:	e1 f7       	brne	.-8      	; 0xea <main+0x7e>
+  f2:	00 c0       	rjmp	.+0      	; 0xf4 <main+0x88>
+  f4:	00 00       	nop
+  f6:	81 50       	subi	r24, 0x01	; 1
+			BC(POWER_OUT_PORT,POWER_OUT_4_bp);
+			BC(STATE_LED_PORT,STATE_LED_bp);
+			_delay_ms(250);			
+		}
+	
+		for (cycleCnt = 0x00 ; cycleCnt < 6 ; cycleCnt++)
+  f8:	01 f7       	brne	.-64     	; 0xba <main+0x4e>
+  fa:	86 e0       	ldi	r24, 0x06	; 6
+			_delay_ms(350);
+		}	
+
+		for (cycleCnt = 0x00 ; cycleCnt < 6 ; cycleCnt++)
+		{
+			BS(RELAY_PORT,RELAY_bp);
+  fc:	ae 9a       	sbi	0x15, 6	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_1_bp);
+  fe:	ad 9a       	sbi	0x15, 5	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_2_bp);
+ 100:	ac 9a       	sbi	0x15, 4	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_3_bp);
+ 102:	ab 9a       	sbi	0x15, 3	; 21
+			BS(POWER_OUT_PORT,POWER_OUT_4_bp);
+ 104:	aa 9a       	sbi	0x15, 2	; 21
+			BS(STATE_LED_PORT,STATE_LED_bp);
+ 106:	94 9a       	sbi	0x12, 4	; 18
+ 108:	2f ef       	ldi	r18, 0xFF	; 255
+ 10a:	38 ef       	ldi	r19, 0xF8	; 248
+ 10c:	95 e1       	ldi	r25, 0x15	; 21
+ 10e:	21 50       	subi	r18, 0x01	; 1
+ 110:	30 40       	sbci	r19, 0x00	; 0
+ 112:	90 40       	sbci	r25, 0x00	; 0
+ 114:	e1 f7       	brne	.-8      	; 0x10e <main+0xa2>
+ 116:	00 c0       	rjmp	.+0      	; 0x118 <main+0xac>
+ 118:	00 00       	nop
+			_delay_ms(450);
+			BC(RELAY_PORT,RELAY_bp);
+ 11a:	ae 98       	cbi	0x15, 6	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_1_bp);
+ 11c:	ad 98       	cbi	0x15, 5	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_2_bp);
+ 11e:	ac 98       	cbi	0x15, 4	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_3_bp);
+ 120:	ab 98       	cbi	0x15, 3	; 21
+			BC(POWER_OUT_PORT,POWER_OUT_4_bp);
+ 122:	aa 98       	cbi	0x15, 2	; 21
+			BC(STATE_LED_PORT,STATE_LED_bp);
+ 124:	94 98       	cbi	0x12, 4	; 18
+ 126:	2f ef       	ldi	r18, 0xFF	; 255
+ 128:	38 ef       	ldi	r19, 0xF8	; 248
+ 12a:	95 e1       	ldi	r25, 0x15	; 21
+ 12c:	21 50       	subi	r18, 0x01	; 1
+ 12e:	30 40       	sbci	r19, 0x00	; 0
+ 130:	90 40       	sbci	r25, 0x00	; 0
+ 132:	e1 f7       	brne	.-8      	; 0x12c <main+0xc0>
+ 134:	00 c0       	rjmp	.+0      	; 0x136 <main+0xca>
+ 136:	00 00       	nop
+ 138:	81 50       	subi	r24, 0x01	; 1
+			BC(POWER_OUT_PORT,POWER_OUT_4_bp);
+			BC(STATE_LED_PORT,STATE_LED_bp);
+			_delay_ms(350);
+		}	
+
+		for (cycleCnt = 0x00 ; cycleCnt < 6 ; cycleCnt++)
+ 13a:	01 f7       	brne	.-64     	; 0xfc <main+0x90>
+ 13c:	2f ef       	ldi	r18, 0xFF	; 255
+ 13e:	3b e7       	ldi	r19, 0x7B	; 123
+ 140:	82 e9       	ldi	r24, 0x92	; 146
+ 142:	21 50       	subi	r18, 0x01	; 1
+ 144:	30 40       	sbci	r19, 0x00	; 0
+ 146:	80 40       	sbci	r24, 0x00	; 0
+ 148:	e1 f7       	brne	.-8      	; 0x142 <main+0xd6>
+ 14a:	00 c0       	rjmp	.+0      	; 0x14c <main+0xe0>
+ 14c:	00 00       	nop
+ 14e:	93 cf       	rjmp	.-218    	; 0x76 <main+0xa>
+
+00000150 <_exit>:
+ 150:	f8 94       	cli
+
+00000152 <__stop_program>:
+ 152:	ff cf       	rjmp	.-2      	; 0x152 <__stop_program>
